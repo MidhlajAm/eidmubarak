@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Eid Mubarak 🌙 — Send Beautiful Eid Greetings</title>
+  <meta name="description" content="Create and share stunning Eid Mubarak greetings with 3D animations, glowing lanterns, and personalized messages. Spread the joy of Eid!" />
+  <meta name="theme-color" content="#0a0a1a" />
+  <meta property="og:title" content="Eid Mubarak 🌙" />
+  <meta property="og:description" content="You've received a beautiful Eid greeting! Open to view your personalized message." />
+  <meta property="og:type" content="website" />
+
+  <!-- Google Fonts: Amiri (Islamic) + Inter (Modern) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet" />
+
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-theme="gold">
+
+  <!-- ===== THREE.JS CANVAS ===== -->
+  <canvas id="scene-canvas"></canvas>
+
+  <!-- ===== AD: TOP BANNER ===== -->
+  <div class="ad-slot ad-top" id="ad-top">
+    <span class="ad-label">Advertisement</span>
+  </div>
+
+  <!-- ===== CREATOR VIEW ===== -->
+  <section id="creator-view" class="view">
+    <div class="creator-container">
+      <div class="creator-header">
+        <div class="creator-icon">🌙</div>
+        <h1 class="creator-title">Eid Greeting Creator</h1>
+        <p class="creator-subtitle">Craft a beautiful, personalized Eid wish to share with loved ones</p>
+      </div>
+
+      <form id="creator-form" class="creator-form" autocomplete="off">
+        <div class="form-group">
+          <label for="sender-name" class="form-label">Your Name</label>
+          <input type="text" id="sender-name" class="form-input" placeholder="e.g., Ali" maxlength="40" required />
+        </div>
+
+        <div class="form-group">
+          <label for="greeting-msg" class="form-label">Your Message</label>
+          <textarea id="greeting-msg" class="form-input form-textarea" placeholder="e.g., Wishing you a blessed Eid filled with joy and happiness!" maxlength="200" rows="3" required></textarea>
+          <span class="char-count"><span id="char-current">0</span>/200</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Choose Theme</label>
+          <div class="theme-picker" id="theme-picker">
+            <button type="button" class="theme-option active" data-theme="gold" id="theme-gold">
+              <span class="theme-swatch swatch-gold"></span>
+              <span class="theme-name">Gold Luxury</span>
+            </button>
+            <button type="button" class="theme-option" data-theme="neon" id="theme-neon">
+              <span class="theme-swatch swatch-neon"></span>
+              <span class="theme-name">Dark Neon</span>
+            </button>
+            <button type="button" class="theme-option" data-theme="classic" id="theme-classic">
+              <span class="theme-swatch swatch-classic"></span>
+              <span class="theme-name">Islamic Classic</span>
+            </button>
+            <button type="button" class="theme-option" data-theme="minimal" id="theme-minimal">
+              <span class="theme-swatch swatch-minimal"></span>
+              <span class="theme-name">Minimal Modern</span>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-generate" id="btn-generate">
+          <span class="btn-sparkle">✨</span>
+          Generate Eid Wish
+          <span class="btn-sparkle">✨</span>
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== GREETING VIEW ===== -->
+  <section id="greeting-view" class="view" style="display:none;">
+    <div class="greeting-container">
+
+      <!-- Greeting Content -->
+      <div class="greeting-content" id="greeting-content">
+        <div class="arabic-bismillah">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>
+        <h1 class="greeting-title" id="greeting-title">Eid Mubarak 🌙</h1>
+        <p class="greeting-message" id="greeting-message"></p>
+        <p class="greeting-sender" id="greeting-sender"></p>
+        <div class="greeting-ornament"></div>
+      </div>
+
+      <!-- Open Share Action -->
+      <div class="greeting-action" style="position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); width: 100%; z-index: 10; opacity: 0; animation: fadeSlideUp 0.8s ease-out 2.5s forwards;">
+        <button class="btn-generate" id="btn-open-share" style="padding: 16px 32px; border-radius: 30px; display: inline-flex; width: auto; min-width: 250px;">
+          <span class="btn-sparkle">✨</span>
+          Open Share Options
+          <span class="btn-sparkle">✨</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SHARE VIEW ===== -->
+  <section id="share-view" class="view" style="display:none;">
+    <div class="creator-container" style="text-align: center;">
+      
+      <div class="creator-icon" style="font-size: 40px; margin-bottom: 20px;">💌</div>
+      <h2 class="creator-title" style="font-size: 1.8rem;">Spread the Joy!</h2>
+      <p class="creator-subtitle" style="margin-bottom: 30px;">Share this elegant greeting with your friends and family.</p>
+
+      <!-- AD: INLINE -->
+      <div class="ad-slot ad-inline" id="ad-inline" style="margin-top: 0;">
+        <span class="ad-label">Advertisement</span>
+      </div>
+
+      <!-- Share Buttons -->
+      <div class="share-section" id="share-section" style="opacity: 1; animation: none; margin-top: 20px;">
+        <div class="share-buttons">
+          <button class="btn-share btn-whatsapp" id="btn-whatsapp" style="width: 100%; justify-content: center; padding: 16px;">
+            <svg class="share-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Share on WhatsApp
+          </button>
+          <button class="btn-share btn-copy" id="btn-copy" style="width: 100%; justify-content: center; padding: 16px;">
+            <svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            Copy Link
+          </button>
+        </div>
+        <span class="copy-feedback" id="copy-feedback">✅ Link copied!</span>
+      </div>
+
+      <!-- Viral CTA -->
+      <div class="viral-cta" style="opacity: 1; animation: none; margin-top: 40px; border-top: 1px dashed var(--border-color); padding-top: 30px;">
+        <button class="btn-create-own" id="btn-create-own" style="width: 100%;">
+          ✨ Create Your Own Eid Wish ✨
+        </button>
+      </div>
+
+      <button class="btn-share" id="btn-back-greeting" style="width: 100%; justify-content: center; margin-top: 16px; background: transparent; border: none; color: var(--text-secondary); box-shadow: none;">
+        ← Back to Greeting
+      </button>
+    </div>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
